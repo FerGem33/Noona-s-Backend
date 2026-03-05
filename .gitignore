@@ -1,0 +1,105 @@
+############################
+# Python
+############################
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+.python-version
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Unit test / coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+
+############################
+# Virtual Environments
+############################
+
+venv/
+.venv/
+env/
+ENV/
+
+############################
+# Environment Variables
+############################
+
+.env
+.env.*
+!.env.example
+
+############################
+# IDEs
+############################
+
+# VSCode
+.vscode/
+
+# JetBrains / PyCharm
+.idea/
+*.iml
+
+############################
+# OS Files
+############################
+
+.DS_Store
+Thumbs.db
+
+############################
+# Logs
+############################
+
+*.log
+logs/
+
+############################
+# Docker
+############################
+
+docker-compose.override.yml
+
+# Docker runtime files
+*.pid
+*.seed
+*.sock
+
+############################
+# Database
+############################
+
+*.db
+*.sqlite3
+
+############################
+# FastAPI / Uvicorn
+############################
+
+*.reload
+*.pid
+
+############################
+# Migrations (optional)
+############################
+
+# Uncomment if using Alembic
+# alembic/versions/*.pyc
+
+############################
+# Temporary Files
+############################
+
+tmp/
+temp/
+*.swp
+*.swo
