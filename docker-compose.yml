@@ -8,8 +8,10 @@ services:
       - db
     environment:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/mydb
+      UPLOAD_DIR: /app/uploads
     volumes:
       - .:/app
+      - ./uploads:/app/uploads
 
   db:
     image: postgres:15
