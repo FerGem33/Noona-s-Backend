@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.api.routes import (
-    auth, rol, usuario, cliente, direccion, estado, pedidos, usuario_has_pedidos, estado_pago,
+    auth, health, rol, usuario, cliente, direccion, estado, pedidos, usuario_has_pedidos, estado_pago,
     tipo_pago, pago, unidad_medida, materia_prima, receta, receta_materia_prima, producto, categoria,
     pedidos_has_producto, proveedor, compra, materia_prima_compra
 )
@@ -9,6 +9,7 @@ api_router = APIRouter(prefix="/api")
 
 routes = {
     "auth": auth.router,
+    "health": health.router,
     "rol": rol.router,
     "usuario": usuario.router,
     "cliente": cliente.router,
