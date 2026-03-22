@@ -13,7 +13,6 @@ from app.crud.proveedor import (
 )
 
 router = APIRouter()
-
 authorized_roles = [Roles.ADMIN, Roles.DUENA]
 
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.api.routes import (
     auth, rol, usuario, cliente, direccion, estado, pedidos, usuario_has_pedidos, estado_pago,
-    tipo_pago, pago, unidad_medida, receta, receta_materia_prima, categoria,
+    tipo_pago, pago, unidad_medida, materia_prima, receta, receta_materia_prima, producto, categoria,
     pedidos_has_producto, proveedor, compra, materia_prima_compra
 )
 
@@ -20,9 +20,11 @@ routes = {
     "tipo_pago": tipo_pago.router,
     "pago": pago.router,
     "unidad_medida": unidad_medida.router,
+    "materia_prima": materia_prima.router,
     "receta": receta.router,
     "receta_materia_prima": receta_materia_prima.router,
     "categoria": categoria.router,
+    "producto": producto.router,
     "pedidos_has_producto": pedidos_has_producto.router,
     "proveedor": proveedor.router,
     "compra": compra.router,
