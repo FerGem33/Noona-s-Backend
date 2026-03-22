@@ -9,9 +9,9 @@ class UsuarioCreate(BaseModel):
 
 
 class UsuarioUpdate(BaseModel):
-    nombre: Optional[str] = Field(..., min_length=1, max_length=100)
-    id_rol: Optional[int] = Field(..., ge=1, le=2147483647)
-    contrasena: Optional[str] = Field(..., min_length=1, max_length=72)
+    nombre: Optional[str] = Field(None, min_length=1, max_length=100)
+    id_rol: Optional[int] = Field(None, ge=1, le=2147483647)
+    contrasena: Optional[str] = Field(None, min_length=1, max_length=72)
 
 
 class UsuarioRead(BaseModel):
