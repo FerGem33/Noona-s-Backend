@@ -31,12 +31,13 @@ env/
 ENV/
 
 ############################
-# Environment Variables
+# Secrets
 ############################
 
 .env
 .env.*
 !.env.example
+*.pem
 
 ############################
 # IDEs
