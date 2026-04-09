@@ -7,7 +7,7 @@ from app.crud import usuario as crud_usuario
 from app.core.roles import Roles
 
 router = APIRouter()
-authorized_roles = [Roles.ADMIN, Roles.DUENA]
+authorized_roles = [Roles.ADMIN, Roles.DUENA, Roles.REPARTIDOR]
 
 
 @router.post("/", response_model=UsuarioRead, status_code=status.HTTP_201_CREATED)
@@ -33,6 +33,16 @@ def read_usuarios(
 ):
     return crud_usuario.get_usuarios(db)
 
+@router.get("/{usuario_nombre}", response_model=UsuarioRead)
+def read_usuario(
+    usuario_nombre: str,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_roles(*authorized_roles))
+):
+    usuario = crud_usuario.get_usuario_by_nombre(db, usuario_nombre)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    return usuario
 
 @router.get("/{usuario_id}", response_model=UsuarioRead)
 def read_usuario(
