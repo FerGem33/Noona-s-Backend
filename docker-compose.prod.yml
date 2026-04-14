@@ -13,7 +13,6 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       UPLOAD_DIR: /app/uploads
     volumes:
-      - .:/app
       - uploads_data:/app/uploads
 
   db:

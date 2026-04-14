@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from app.api.routes import (
     auth, health, rol, usuario, cliente, direccion, estado, pedidos, usuario_has_pedidos, estado_pago,
     tipo_pago, pago, unidad_medida, materia_prima, receta, receta_materia_prima, producto, categoria,
-    pedidos_has_producto, proveedor, compra, materia_prima_compra
+    pedidos_has_producto, proveedor, compra, materia_prima_compra, reportes
 )
 
 api_router = APIRouter(prefix="/api")
@@ -29,7 +29,8 @@ routes = {
     "pedidos_has_producto": pedidos_has_producto.router,
     "proveedor": proveedor.router,
     "compra": compra.router,
-    "materia_prima_compra": materia_prima_compra.router
+    "materia_prima_compra": materia_prima_compra.router,
+    "reportes": reportes.router,
 }
 
 for name, router in zip(routes.keys(), routes.values()):
