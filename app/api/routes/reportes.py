@@ -125,8 +125,8 @@ def reporte_ventas(dias: int, db: Session = Depends(get_db)):
 @router.get("/compras/{dias}")
 def reporte_compras(dias: int, db: Session = Depends(get_db)):
     result = db.execute(text("""
-        SELECT p.descripcion, 
-        to_char(c.fecha, 'DD/MM/YYYY'), c.total
+        SELECT p.descripcion AS proveedor, 
+        to_char(c.fecha, 'DD/MM/YYYY') AS fecha, c.total
         FROM compra c
         JOIN proveedor p ON c.id_proveedor = p.id_proveedor
         WHERE c.fecha > CURRENT_DATE - :days
