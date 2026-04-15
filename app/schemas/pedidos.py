@@ -26,8 +26,19 @@ class PedidoUpdate(BaseModel):
     subtotal: Optional[float] = Field(None, ge=0)
     total: Optional[float] = Field(None, ge=0)
 
-
 class PedidoRead(BaseModel):
+    id_pedido: int
+    id_direccion: int
+    id_estado: int
+    id_cliente: int
+    fecha_entrega: datetime
+    fecha_pedido: datetime
+    comentario: Optional[str]
+    tipo_entrega: bool
+    subtotal: float
+    total: float
+
+class PedidoReadDetailed(BaseModel):
     id_pedido: int
     id_direccion: int
     id_estado: int
