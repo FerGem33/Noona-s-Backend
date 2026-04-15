@@ -122,6 +122,51 @@ def reporte_ventas(dias: int, db: Session = Depends(get_db)):
         headers={"Content-Disposition": "inline; filename=ventas.pdf"}
     )
 
+@router.get("/compras/{dias}")
+def reporte_compras(dias: int, db: Session = Depends(get_db)):
+    result = db.execute(text("""
+        SELECT p.descripcion, 
+        to_char(c.fecha, 'DD/MM/YYYY'), c.total
+        FROM compra c
+        JOIN proveedor p ON c.id_proveedor = p.id_proveedor
+        WHERE c.fecha > CURRENT_DATE - :days
+        ORDER BY fecha DESC;
+    """), {
+        "days": dias
+        }
+    )
+    compras = result.mappings().all()
+
+    n_compras = len(compras)
+    sum_compras = sum(c.total for c in compras)
+    if n_compras > 0:
+        avg_compras = sum_compras/n_compras
+    else:
+        avg_compras = 0
+
+    stats = [
+        {"label": "Compras", "value": n_compras},
+        {"label": "Total de compras", "value": f'${sum_compras}'},
+        {"label": "Promedio de compras", "value": f'${avg_compras}'},
+    ]
+
+    pdf = generate_pdf(
+        "compras.html",
+        {
+            "reporte_titulo": "Reporte de compras",
+            "inicio": format_date(get_today(False) - timedelta(days=dias)),
+            "fin": get_today(),
+            "compras": compras,
+            "stats": stats,
+        }
+    )
+
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "inline; filename=compras.pdf"}
+    )
+
 @router.get("/pedidos/{dias}")
 def reporte_pedidos(dias: int, db: Session = Depends(get_db)):
     result = db.execute(text("""
