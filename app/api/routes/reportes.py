@@ -137,7 +137,8 @@ def reporte_pedidos(dias: int, db: Session = Depends(get_db)):
          JOIN cliente c ON p.id_cliente = c.id_cliente
          JOIN direccion d ON p.id_direccion = d.id_direccion
          JOIN estado e ON p.id_estado = e.id_estado
-         WHERE p.fecha_entrega > CURRENT_DATE - :days
+         WHERE p.fecha_pedido > CURRENT_DATE - :days
+         OR p.fecha_entrega > CURRENT_DATE - :days
          ORDER BY fecha_entrega;
          """), {
         "days": dias
@@ -149,7 +150,8 @@ def reporte_pedidos(dias: int, db: Session = Depends(get_db)):
         SELECT e.descripcion AS estado, COUNT(*) AS pedidos
         FROM estado e
         JOIN pedidos p ON e.id_estado = p.id_estado
-        WHERE p.fecha_entrega > CURRENT_DATE - 50
+        WHERE p.fecha_pedido > CURRENT_DATE - :days
+         OR p.fecha_entrega > CURRENT_DATE - :days
         GROUP BY estado;
         """), {
         "days": dias
