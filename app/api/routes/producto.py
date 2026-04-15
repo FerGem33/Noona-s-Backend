@@ -47,8 +47,7 @@ def crear_producto(
 
 @router.get("/", response_model=list[ProductoOut])
 def listar_productos(
-    db: Session = Depends(get_db),
-    current_user=Depends(require_roles(*authorized_roles))
+    db: Session = Depends(get_db)
 ):
     productos = get_productos(db)
     return add_image_url_list(productos)
@@ -58,7 +57,7 @@ def listar_productos(
 def obtener_producto(
     id_producto: int,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    current_user=Depends(require_roles(*authorized_roles))
 ):
     producto = get_producto_by_id(db, id_producto)
 

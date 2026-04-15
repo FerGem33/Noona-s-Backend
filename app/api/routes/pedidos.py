@@ -46,8 +46,7 @@ def read_pedidos(
 @router.get("/{id_pedido}", response_model=PedidoRead)
 def read_pedido(
     id_pedido: int,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     pedido = crud_pedidos.get_pedido_by_id(db, id_pedido)
     if not pedido:
