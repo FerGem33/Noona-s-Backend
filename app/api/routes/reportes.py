@@ -78,7 +78,7 @@ def reporte_inventario(db: Session = Depends(get_db)):
 @router.get("/ventas/{dias}")
 def reporte_ventas(dias: int, db: Session = Depends(get_db)):
     result = db.execute(text("""
-        SELECT c.nombre||' '||apellido AS cliente, 
+        SELECT c.nombre||' '||c.apellido AS cliente, 
         to_char(p.fecha_pedido, 'DD/MM/YYYY') as fecha_pedido,
         to_char(p.fecha_entrega, 'DD/MM/YYYY') as fecha_entrega, p.total
         FROM pedidos p
@@ -122,3 +122,61 @@ def reporte_ventas(dias: int, db: Session = Depends(get_db)):
         headers={"Content-Disposition": "inline; filename=ventas.pdf"}
     )
 
+@router.get("/pedidos/{dias}")
+def reporte_pedidos(dias: int, db: Session = Depends(get_db)):
+    result = db.execute(text("""
+         SELECT c.nombre || ' ' || c.apellido AS cliente, d.descripcion AS direccion,
+                to_char(p.fecha_pedido, 'DD/MM/YYYY')  as fecha_pedido,
+                to_char(p.fecha_entrega, 'DD/MM/YYYY') as fecha_entrega,
+                p.total,
+                CASE 
+                    WHEN p.tipo_entrega = TRUE THEN 'Domicilio'
+                    ELSE 'En local'
+                END AS tipo_entrega, e.descripcion AS estado
+         FROM pedidos p
+         JOIN cliente c ON p.id_cliente = c.id_cliente
+         JOIN direccion d ON p.id_direccion = d.id_direccion
+         JOIN estado e ON p.id_estado = e.id_estado
+         WHERE p.fecha_entrega > CURRENT_DATE - :days
+         ORDER BY fecha_entrega;
+         """), {
+        "days": dias
+    }
+    )
+    pedidos = result.mappings().all()
+
+    result2 = db.execute(text("""
+        SELECT e.descripcion AS estado, COUNT(*) AS pedidos
+        FROM estado e
+        JOIN pedidos p ON e.id_estado = p.id_estado
+        WHERE p.fecha_entrega > CURRENT_DATE - 50
+        GROUP BY estado;
+        """), {
+        "days": dias
+    }
+    )
+    estados = result2.mappings().all()
+
+    stats = [
+        {"label": "Pedidos", "value": len(estados)},
+    ]
+
+    for estado in estados:
+        stats.append({"label": f'Pedidos {estado["estado"]}', "value": estado["pedidos"]})
+
+    pdf = generate_pdf(
+        "pedidos.html",
+        {
+            "reporte_titulo": "Reporte de pedidos",
+            "inicio": format_date(get_today(False) - timedelta(days=dias)),
+            "fin": get_today(),
+            "pedidos": pedidos,
+            "stats": stats,
+        }
+    )
+
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "inline; filename=pedidos.pdf"}
+    )
