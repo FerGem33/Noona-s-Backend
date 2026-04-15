@@ -160,7 +160,7 @@ def reporte_pedidos(dias: int, db: Session = Depends(get_db)):
     estados = result2.mappings().all()
 
     stats = [
-        {"label": "Pedidos", "value": len(estados)},
+        {"label": "Pedidos", "value": sum(e.pedidos for e in estados)},
     ]
 
     for estado in estados:
