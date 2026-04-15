@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_db, require_roles, validate_key_exist
+from app.core.dependencies import get_db, require_roles, validate_key_exist, get_current_user
 from app.core.roles import Roles
 from app.crud.producto import (
     create_producto,
@@ -58,7 +58,7 @@ def listar_productos(
 def obtener_producto(
     id_producto: int,
     db: Session = Depends(get_db),
-    current_user=Depends(require_roles(*authorized_roles))
+    current_user=Depends(get_current_user)
 ):
     producto = get_producto_by_id(db, id_producto)
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_db, require_roles, validate_key_exist
+from app.core.dependencies import get_db, require_roles, validate_key_exist, get_current_user
 from app.core.roles import Roles
 from app.schemas.pedidos import PedidoCreate, PedidoRead, PedidoUpdate
 from app.crud import pedidos as crud_pedidos
@@ -47,7 +47,7 @@ def read_pedidos(
 def read_pedido(
     id_pedido: int,
     db: Session = Depends(get_db),
-    current_user=Depends(require_roles(*authorized_roles))
+    current_user=Depends(get_current_user)
 ):
     pedido = crud_pedidos.get_pedido_by_id(db, id_pedido)
     if not pedido:
