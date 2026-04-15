@@ -5,8 +5,13 @@ from sqlalchemy.orm import Session
 def get_pedidos(db: Session):
     result = db.execute(
         text("""
-            SELECT *
-            FROM pedidos
+            SELECT p.id_pedido, p.id_direccion, p.id_estado, p.id_cliente, 
+                   d.descripcion AS direccion, e.descripcion AS estado, c.nombre||' '||c.apellido AS cliente,
+                   p.fecha_entrega, p.fecha_pedido, p.comentario, p.tipo_entrega, p.subtotal, p.total
+            FROM pedidos p
+            JOIN direccion d ON p.id_direccion = d.id_direccion
+            JOIN estado e ON p.id_estado = e.id_estado
+            JOIN cliente c ON p.id_cliente = c.id_cliente
             ORDER BY id_pedido
         """)
     )
@@ -16,8 +21,13 @@ def get_pedidos(db: Session):
 def get_pedido_by_id(db: Session, id_pedido: int):
     result = db.execute(
         text("""
-            SELECT *
-            FROM pedidos
+            SELECT p.id_pedido, p.id_direccion, p.id_estado, p.id_cliente, 
+                   d.descripcion AS direccion, e.descripcion AS estado, c.nombre||' '||c.apellido AS cliente,
+                   p.fecha_entrega, p.fecha_pedido, p.comentario, p.tipo_entrega, p.subtotal, p.total
+            FROM pedidos p
+            JOIN direccion d ON p.id_direccion = d.id_direccion
+            JOIN estado e ON p.id_estado = e.id_estado
+            JOIN cliente c ON p.id_cliente = c.id_cliente
             WHERE id_pedido = :id_pedido
         """),
         {"id_pedido": id_pedido}

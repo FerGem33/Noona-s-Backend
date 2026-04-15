@@ -32,6 +32,9 @@ class PedidoRead(BaseModel):
     id_direccion: int
     id_estado: int
     id_cliente: int
+    direccion: str
+    estado:  str
+    cliente: str
     fecha_entrega: datetime
     fecha_pedido: datetime
     comentario: Optional[str]
