@@ -32,7 +32,7 @@ def get_pedido_by_id(db: Session, id_pedido: int):
         """),
         {"id_pedido": id_pedido}
     )
-    pedido = result.mappings().first()
+    pedido = dict(result.mappings().first())
 
     result2 = db.execute(
         text("""
