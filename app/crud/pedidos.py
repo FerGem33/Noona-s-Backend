@@ -32,7 +32,20 @@ def get_pedido_by_id(db: Session, id_pedido: int):
         """),
         {"id_pedido": id_pedido}
     )
-    return result.mappings().first()
+    pedido = result.mappings().first()
+
+    result2 = db.execute(
+        text("""
+            SELECT p.descripcion as producto 
+            FROM producto p 
+            JOIN cotizacion c ON p.id_producto = c.id_producto
+            WHERE c.id_pedido = :id_pedido
+        """),
+        {"id_pedido": id_pedido}
+    )
+    productos = [row['pedido'] for row in result2.mappings().all()]
+    pedido['productos'] = productos
+    return pedido
 
 
 def create_pedido(
