@@ -43,7 +43,7 @@ def get_pedido_by_id(db: Session, id_pedido: int):
         """),
         {"id_pedido": id_pedido}
     )
-    productos = [row['pedido'] for row in result2.mappings().all()]
+    productos = [row['producto'] for row in result2.mappings().all()]
     pedido['productos'] = productos
     return pedido
 
