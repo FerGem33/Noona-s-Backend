@@ -8,7 +8,7 @@ from app.core.roles import Roles
 
 
 router = APIRouter()
-authorized_roles = [Roles.ADMIN, Roles.DUENA]
+authorized_roles = [Roles.ADMIN, Roles.DUENA, Roles.REPARTIDOR]
 
 
 @router.post("/", response_model=ClienteRead, status_code=status.HTTP_201_CREATED)

@@ -8,7 +8,7 @@ from app.crud import pedidos as crud_pedidos
 
 
 router = APIRouter()
-authorized_roles = [Roles.ADMIN, Roles.DUENA]
+authorized_roles = [Roles.ADMIN, Roles.DUENA, Roles.REPARTIDOR]
 
 
 @router.post("/", response_model=PedidoRead, status_code=status.HTTP_201_CREATED)
