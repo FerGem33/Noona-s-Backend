@@ -102,7 +102,7 @@ def reporte_ventas(dias: int, db: Session = Depends(get_db)):
     stats = [
         {"label": "Ventas", "value": n_ventas},
         {"label": "Total de ventas", "value": f'${sum_ventas}'},
-        {"label": "Promedio de ventas", "value": f'${avg_ventas}'},
+        {"label": "Promedio de ventas", "value": f'${avg_ventas:.2f}'},
     ]
 
     pdf = generate_pdf(
@@ -147,7 +147,7 @@ def reporte_compras(dias: int, db: Session = Depends(get_db)):
     stats = [
         {"label": "Compras", "value": n_compras},
         {"label": "Total de compras", "value": f'${sum_compras}'},
-        {"label": "Promedio de compras", "value": f'${avg_compras}'},
+        {"label": "Promedio de compras", "value": f'${avg_compras:.2f}'},
     ]
 
     pdf = generate_pdf(
