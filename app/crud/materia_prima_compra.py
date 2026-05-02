@@ -7,37 +7,34 @@ from app.schemas.materia_prima_compra import (
 )
 
 
-def create_materia_prima_compra(db: Session, materia_prima_compra: MateriaPrimaCompraCreate):
+def create_materia_prima_compra(db: Session, materia_prima_compra: MateriaPrimaCompraCreate, do_commit=True):
     query = text("""
         INSERT INTO public.materia_prima_compra (
             id_materia,
             id_compra,
-            cantidad,
-            precio_individual
+            cantidad
         )
         VALUES (
             :id_materia,
             :id_compra,
-            :cantidad,
-            :precio_individual
+            :cantidad
         )
-        RETURNING id_materia, id_compra, cantidad, precio_individual
+        RETURNING id_materia, id_compra, cantidad
     """)
 
     result = db.execute(query, {
         "id_materia": materia_prima_compra.id_materia,
         "id_compra": materia_prima_compra.id_compra,
-        "cantidad": materia_prima_compra.cantidad,
-        "precio_individual": materia_prima_compra.precio_individual
+        "cantidad": materia_prima_compra.cantidad
     })
-
-    db.commit()
+    if do_commit:
+        db.commit()
     return result.mappings().first()
 
 
 def get_materia_prima_compra(db: Session):
     query = text("""
-        SELECT id_materia, id_compra, cantidad, precio_individual
+        SELECT id_materia, id_compra, cantidad
         FROM public.materia_prima_compra
         ORDER BY id_materia, id_compra
     """)
@@ -48,7 +45,7 @@ def get_materia_prima_compra(db: Session):
 
 def get_materia_prima_compra_by_id(db: Session, id_materia: int, id_compra: int):
     query = text("""
-        SELECT id_materia, id_compra, cantidad, precio_individual
+        SELECT id_materia, id_compra, cantidad
         FROM public.materia_prima_compra
         WHERE id_materia = :id_materia AND id_compra = :id_compra
     """)
@@ -59,6 +56,20 @@ def get_materia_prima_compra_by_id(db: Session, id_materia: int, id_compra: int)
     })
 
     return result.mappings().first()
+
+
+def get_materia_prima_compra_by_id_compra(db: Session, id_compra: int):
+    query = text("""
+        SELECT id_materia, cantidad
+        FROM public.materia_prima_compra
+        WHERE id_compra = :id_compra
+    """)
+
+    result = db.execute(query, {
+        "id_compra": id_compra
+    })
+
+    return result.mappings().all()
 
 
 def update_materia_prima_compra(
@@ -87,20 +98,14 @@ def update_materia_prima_compra(
         if materia_prima_compra.cantidad is not None
         else current_relacion["cantidad"]
     )
-    new_precio_individual = (
-        materia_prima_compra.precio_individual
-        if materia_prima_compra.precio_individual is not None
-        else current_relacion["precio_individual"]
-    )
 
     query = text("""
         UPDATE public.materia_prima_compra
         SET id_materia = :new_id_materia,
             id_compra = :new_id_compra,
-            cantidad = :cantidad,
-            precio_individual = :precio_individual
+            cantidad = :cantidad
         WHERE id_materia = :id_materia AND id_compra = :id_compra
-        RETURNING id_materia, id_compra, cantidad, precio_individual
+        RETURNING id_materia, id_compra, cantidad
     """)
 
     result = db.execute(query, {
@@ -108,19 +113,18 @@ def update_materia_prima_compra(
         "id_compra": id_compra,
         "new_id_materia": new_id_materia,
         "new_id_compra": new_id_compra,
-        "cantidad": new_cantidad,
-        "precio_individual": new_precio_individual
+        "cantidad": new_cantidad
     })
 
     db.commit()
     return result.mappings().first()
 
 
-def delete_materia_prima_compra(db: Session, id_materia: int, id_compra: int):
+def delete_materia_prima_compra(db: Session, id_materia: int, id_compra: int, do_commit=True):
     query = text("""
         DELETE FROM public.materia_prima_compra
         WHERE id_materia = :id_materia AND id_compra = :id_compra
-        RETURNING id_materia, id_compra, cantidad, precio_individual
+        RETURNING id_materia, id_compra, cantidad
     """)
 
     result = db.execute(query, {
@@ -129,5 +133,7 @@ def delete_materia_prima_compra(db: Session, id_materia: int, id_compra: int):
     })
 
     deleted_relacion = result.mappings().first()
-    db.commit()
+
+    if do_commit:
+        db.commit()
     return deleted_relacion
