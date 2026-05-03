@@ -287,3 +287,57 @@ def reporte_pedidos(
         media_type="application/pdf",
         headers={"Content-Disposition": "inline; filename=pedidos.pdf"}
     )
+
+
+@router.get("/compra/{id_compra}")
+def reporte_compra(
+    id_compra: int,
+    db: Session = Depends(get_db)
+):
+
+    result = db.execute(text("""
+        SELECT mp.descripcion, mpc.cantidad, um.abreviatura AS unidad, mp.precio_unitario, (mpc.cantidad * mp.precio_unitario) AS subtotal
+        FROM materia_prima mp
+        JOIN materia_prima_compra mpc ON mp.id_materia = mpc.id_materia
+        JOIN unidad_medida um ON mp.id_unidad = um.id_unidad
+        WHERE mpc.id_compra = :id_compra
+        ORDER BY descripcion
+    """), {
+        "id_compra": id_compra
+    })
+
+    detalle = result.mappings().all()
+
+    result = db.execute(text("""
+            SELECT p.descripcion AS proveedor, c.fecha, c.total
+            FROM compra c
+            JOIN proveedor p ON c.id_proveedor = p.id_proveedor
+            WHERE c.id_compra = :id_compra;
+        """), {
+        "id_compra": id_compra
+    })
+
+    compra = result.mappings().first()
+
+    stats = [
+        {"label": "Proveedor", "value": compra["proveedor"]},
+        {"label": "Total de compra", "value": f'${compra["total"]:.2f}'},
+        {"label": "Fecha", "value": format_date(compra["fecha"])},
+    ]
+
+    pdf = generate_pdf(
+        "compra.html",
+        {
+            "reporte_titulo": "Reporte de compra",
+            "fecha_de_hoy": get_today(),
+            "id": id_compra,
+            "detalle": detalle,
+            "stats": stats,
+        }
+    )
+
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "inline; filename=compra.pdf"}
+    )
