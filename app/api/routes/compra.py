@@ -143,7 +143,7 @@ def actualizar_compra(
 
         if not compra_actualizada:
             raise HTTPException(status_code=404, detail="Compra no encontrada")
-        
+
         return compra_actualizada
 
 

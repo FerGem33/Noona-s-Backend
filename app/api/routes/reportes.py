@@ -22,8 +22,8 @@ router = APIRouter()
 @router.get("/inventario")
 def reporte_inventario(db: Session = Depends(get_db)):
     result = db.execute(text("""
-         SELECT mp.descripcion as insumo, u.descripcion as unidad, mp.stock_actual, 
-                mp.minimo as stock_minimo, mp.maximo as stock_maximo, mp.precio_unitario,
+         SELECT mp.descripcion as insumo, u.abreviatura as unidad, mp.stock_actual, 
+                mp.minimo as stock_minimo, mp.maximo as stock_maximo,
                 CASE
                     WHEN stock_actual < minimo THEN 1
                     WHEN stock_actual > maximo THEN 3
@@ -101,7 +101,7 @@ def reporte_ventas(dias: int, db: Session = Depends(get_db)):
 
     stats = [
         {"label": "Ventas", "value": n_ventas},
-        {"label": "Total de ventas", "value": f'${sum_ventas}'},
+        {"label": "Total de ventas", "value": f'${sum_ventas:.2f}'},
         {"label": "Promedio de ventas", "value": f'${avg_ventas:.2f}'},
     ]
 
@@ -146,7 +146,7 @@ def reporte_compras(dias: int, db: Session = Depends(get_db)):
 
     stats = [
         {"label": "Compras", "value": n_compras},
-        {"label": "Total de compras", "value": f'${sum_compras}'},
+        {"label": "Total de compras", "value": f'${sum_compras:.2f}'},
         {"label": "Promedio de compras", "value": f'${avg_compras:.2f}'},
     ]
 

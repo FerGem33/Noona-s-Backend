@@ -140,13 +140,12 @@
       page-break-inside: avoid;
     }
 
-    .col-insumo { width: 16%; }
-    .col-unidad { width: 8%; }
+    .col-insumo { width: 20%; }
+    .col-unidad { width: 10%; }
     .col-stock  { width: 12%; }
     .col-min    { width: 12%; }
     .col-max    { width: 12%; }
-    .col-precio { width: 14%; }
-    .col-estado { width: 8%; }
+    .col-estado { width: 9%; }
 
     .insumo {
       font-weight: 700;
@@ -203,7 +202,6 @@
             <th class="col-stock">Stock<br>actual</th>
             <th class="col-min">Stock<br>mínimo</th>
             <th class="col-max">Stock<br>máximo</th>
-            <th class="col-precio">Precio unitario</th>
             <th class="col-estado">Estado</th>
           </tr>
         </thead>
@@ -215,7 +213,6 @@
             <td class="num">{{ item.stock_actual }}</td>
             <td class="num">{{ item.stock_minimo }}</td>
             <td class="num">{{ item.stock_maximo }}</td>
-            <td class="num">${{ item.precio_unitario }}</td>
             <td class="estado">{{ item.estado }}</td>
           </tr>
           {% endfor %}
