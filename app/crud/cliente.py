@@ -7,6 +7,7 @@ def get_clientes(db: Session):
         text("""
             SELECT id_cliente, nombre, apellido, telefono
             FROM cliente
+            WHERE activo = TRUE
             ORDER BY id_cliente
         """)
     )
@@ -18,7 +19,7 @@ def get_cliente_by_id(db: Session, id_cliente: int):
         text("""
             SELECT id_cliente, nombre, apellido, telefono
             FROM cliente
-            WHERE id_cliente = :id_cliente
+            WHERE id_cliente = :id_cliente AND activo = TRUE
         """),
         {"id_cliente": id_cliente}
     )
@@ -80,7 +81,7 @@ def update_cliente(
 def delete_cliente(db: Session, id_cliente: int):
     result = db.execute(
         text("""
-            DELETE FROM cliente
+            UPDATE cliente SET activo = FALSE
             WHERE id_cliente = :id_cliente
             RETURNING id_cliente, nombre, apellido, telefono
         """),
