@@ -12,7 +12,7 @@ def create_cotizacion(db: Session, cotizacion: CotizacionCreate):
         INSERT INTO public.cotizacion (
             id_pedido,
             id_producto,
-            id_estado
+            id_estado,
             cantidad,
             precio_disenio,
             precio_envio
