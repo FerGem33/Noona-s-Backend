@@ -5,7 +5,7 @@ from sqlalchemy import text
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
-from app.core.dependencies import get_db
+from app.core.dependencies import get_db, validate_key_exist
 from app.services.pdf import generate_pdf
 
 
@@ -294,6 +294,7 @@ def reporte_compra(
     id_compra: int,
     db: Session = Depends(get_db)
 ):
+    validate_key_exist(db, id_compra, "compra", "id_compra")
 
     result = db.execute(text("""
         SELECT mp.descripcion, mpc.cantidad, um.abreviatura AS unidad, mp.precio_unitario, (mpc.cantidad * mp.precio_unitario) AS subtotal
