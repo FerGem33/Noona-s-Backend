@@ -8,7 +8,7 @@ def get_pedidos(db: Session):
         text("""
             SELECT p.id_pedido, p.id_direccion, p.id_estado, p.id_cliente, p.id_cotizacion,
                    d.descripcion AS direccion, e.descripcion AS estado, c.nombre||' '||c.apellido AS cliente,
-                   p.fecha_entrega, p.fecha_pedido, p.comentario, p.tipo_entrega, p.subtotal, p.total
+                   p.fecha_entrega, p.fecha_pedido, p.comentario, p.tipo_entrega, p.subtotal, p.total, p.efectuada
             FROM pedidos p
             JOIN direccion d ON p.id_direccion = d.id_direccion
             JOIN estado e ON p.id_estado = e.id_estado
@@ -44,7 +44,7 @@ def get_pedido_by_id(db: Session, id_pedido: int):
         text("""
                 SELECT p.id_pedido, p.id_direccion, p.id_estado, p.id_cliente, p.id_cotizacion,
                        d.descripcion AS direccion, e.descripcion AS estado, c.nombre||' '||c.apellido AS cliente,
-                       p.fecha_entrega, p.fecha_pedido, p.comentario, p.tipo_entrega, p.subtotal, p.total
+                       p.fecha_entrega, p.fecha_pedido, p.comentario, p.tipo_entrega, p.subtotal, p.total, p.efectuada
                 FROM pedidos p
                 JOIN direccion d ON p.id_direccion = d.id_direccion
                 JOIN estado e ON p.id_estado = e.id_estado
@@ -73,7 +73,7 @@ def get_pedido_by_id(db: Session, id_pedido: int):
     }
 
 
-def create_pedido(db: Session, pedido: PedidoCreate):
+def create_pedido(db: Session, pedido: PedidoCreate, do_commit=True):
     result = db.execute(
         text("""
             INSERT INTO pedidos (
@@ -104,13 +104,14 @@ def create_pedido(db: Session, pedido: PedidoCreate):
         }
     )
 
-    db.commit()
+    if do_commit:
+        db.commit()
     created = result.mappings().first()
 
     return get_pedido_by_id(db, created["id_pedido"])
 
 
-def update_pedido(db: Session, id_pedido: int, pedido: PedidoUpdate):
+def update_pedido(db: Session, id_pedido: int, pedido: PedidoUpdate, do_commit=True):
     current = get_pedido_by_id(db, id_pedido)
 
     if not current:
@@ -147,13 +148,14 @@ def update_pedido(db: Session, id_pedido: int, pedido: PedidoUpdate):
         }
     )
 
-    db.commit()
+    if do_commit:
+        db.commit()
     updated = result.mappings().first()
 
     return get_pedido_by_id(db, updated["id_pedido"])
 
 
-def delete_pedido(db: Session, id_pedido: int):
+def delete_pedido(db: Session, id_pedido: int, do_commit=True):
     pedido = get_pedido_by_id(db, id_pedido)
 
     if not pedido:
@@ -180,6 +182,8 @@ def delete_pedido(db: Session, id_pedido: int):
         """),
         {"id_pedido": id_pedido}
     )
-    db.commit()
+
+    if do_commit:
+        db.commit()
 
     return pedido
