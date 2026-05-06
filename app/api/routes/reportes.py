@@ -378,6 +378,10 @@ def reporte_pedido(
         "id_pedido": id_pedido
     }).mappings().first()
 
+    pedido = dict(pedido)
+    pedido["fecha_pedido"] = format_date(pedido["fecha_pedido"])
+    pedido["fecha_entrega"] =  format_date(pedido["fecha_entrega"])
+
     detalle = db.execute(text("""
         SELECT
             pr.descripcion AS producto,
