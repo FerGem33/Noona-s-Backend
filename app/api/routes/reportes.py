@@ -342,3 +342,73 @@ def reporte_compra(
         media_type="application/pdf",
         headers={"Content-Disposition": "inline; filename=compra.pdf"}
     )
+
+
+@router.get("/pedido/{id_pedido}")
+def reporte_pedido(
+    id_pedido: int,
+    db: Session = Depends(get_db)
+):
+    validate_key_exist(db, id_pedido, "pedidos", "id_pedido")
+
+    pedido = db.execute(text("""
+        SELECT 
+            p.id_pedido,
+            p.id_cotizacion,
+            c.nombre || ' ' || c.apellido AS cliente,
+            d.descripcion AS direccion,
+            e.descripcion AS estado,
+            p.fecha_pedido,
+            p.fecha_entrega,
+            CASE 
+                WHEN p.tipo_entrega = TRUE THEN 'A domicilio'
+                ELSE 'Recoger en tienda'
+            END AS tipo_entrega,
+            p.subtotal,
+            cot.precio_envio,
+            p.total,
+            p.comentario
+        FROM pedidos p
+        JOIN cliente c ON p.id_cliente = c.id_cliente
+        JOIN direccion d ON p.id_direccion = d.id_direccion
+        JOIN estado e ON p.id_estado = e.id_estado
+        JOIN cotizacion cot ON p.id_cotizacion = cot.id_cotizacion
+        WHERE p.id_pedido = :id_pedido
+    """), {
+        "id_pedido": id_pedido
+    }).mappings().first()
+
+    detalle = db.execute(text("""
+        SELECT
+            pr.descripcion AS producto,
+            dc.cantidad,
+            pr.precio_unitario,
+            dc.precio_disenio,
+            (pr.precio_unitario * dc.cantidad) AS subtotal_producto,
+            ((pr.precio_unitario * dc.cantidad) + dc.precio_disenio) AS total_producto
+        FROM pedidos p
+        JOIN cotizacion cot ON p.id_cotizacion = cot.id_cotizacion
+        JOIN detalles_cotizacion dc ON cot.id_cotizacion = dc.id_cotizacion
+        JOIN producto pr ON dc.id_producto = pr.id_producto
+        WHERE p.id_pedido = :id_pedido
+        ORDER BY pr.descripcion
+    """), {
+        "id_pedido": id_pedido
+    }).mappings().all()
+
+    pdf = generate_pdf(
+        "pedido.html",
+        {
+            "reporte_titulo": f"Reporte de pedido #{id_pedido}",
+            "fecha_de_hoy": get_today(),
+            "id": id_pedido,
+            "pedido": pedido,
+            "detalle": detalle,
+        }
+    )
+
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "inline; filename=pedido.pdf"}
+    )

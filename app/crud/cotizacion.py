@@ -154,7 +154,7 @@ def delete_cotizacion(db: Session, id_cotizacion: int):
     if used:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"No se puede eliminar la cotización porque está asociada al pedido #{used['id_pedido']}n"
+            detail=f"No se puede eliminar la cotización porque está asociada al pedido #{used['id_pedido']}"
         )
 
     db.execute(text("""
