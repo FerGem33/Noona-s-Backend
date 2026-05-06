@@ -27,7 +27,7 @@ def create_cotizacion(db: Session, cotizacion: CotizacionCreate):
                     producto_id_producto,
                     cotizacion_id_cotizacion,
                     cantidad,
-                    precio_diseño
+                    precio_disenio
                 )
                 VALUES (
                     :id_producto,
@@ -57,7 +57,7 @@ def get_cotizacion(db: Session):
 
     for cot in cotizaciones:
         detalles = db.execute(text("""
-            SELECT producto_id_producto, cantidad, precio_diseño
+            SELECT producto_id_producto, cantidad, precio_disenio
             FROM detalles_cotizacion
             WHERE cotizacion_id_cotizacion = :id
         """), {"id": cot["id_cotizacion"]}).mappings().all()
@@ -81,7 +81,7 @@ def get_cotizacion_by_id(db: Session, id_cotizacion: int):
         return None
 
     detalles = db.execute(text("""
-        SELECT producto_id_producto, cantidad, precio_diseño
+        SELECT producto_id_producto, cantidad, precio_disenio
         FROM detalles_cotizacion
         WHERE cotizacion_id_cotizacion = :id
     """), {"id": id_cotizacion}).mappings().all()
@@ -121,7 +121,7 @@ def update_cotizacion(db: Session, id_cotizacion: int, cotizacion: CotizacionUpd
                     producto_id_producto,
                     cotizacion_id_cotizacion,
                     cantidad,
-                    precio_diseño
+                    precio_disenio
                 )
                 VALUES (:prod, :cot, :cant, :precio)
             """), {
