@@ -28,7 +28,7 @@ def crear_cotizacion(
     current_user=Depends(require_roles(*authorized_roles))
 ):
     for cot in cotizacion.detalles:
-        validate_key_exist(db, cot.producto_id_producto, "producto", "id_producto")
+        validate_key_exist(db, cot.id_producto, "producto", "id_producto")
 
     return create_cotizacion(db, cotizacion)
 
@@ -64,7 +64,7 @@ def actualizar_cotizacion(
 ):
     validate_key_exist(db, id_cotizacion, "cotizacion", "id_cotizacion")
     for cot in cotizacion.detalles:
-        validate_key_exist(db, cot.producto_id_producto, "producto", "id_producto")
+        validate_key_exist(db, cot.id_producto, "producto", "id_producto")
 
     relacion_actualizada = update_cotizacion(
         db,

@@ -1,12 +1,7 @@
 from decimal import Decimal
 from typing import List
 from pydantic import BaseModel, Field
-
-
-class DetalleCotizacionBase(BaseModel):
-    producto_id_producto: int = Field(..., ge=1)
-    cantidad: int = Field(..., ge=0)
-    precio_disenio: Decimal = Field(..., ge=0)
+from app.schemas.detalle_cotizacion import DetalleCotizacionBase
 
 
 class DetalleCotizacionCreate(DetalleCotizacionBase):

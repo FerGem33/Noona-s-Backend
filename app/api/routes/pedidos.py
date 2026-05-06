@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from typing import List
 
 from app.core.dependencies import get_db, require_roles, validate_key_exist, get_current_user
 from app.core.roles import Roles
-from app.schemas.pedidos import PedidoCreate, PedidoRead, PedidoReadDetailed, PedidoReadDetailed2, PedidoUpdate
+from app.schemas.pedidos import PedidoCreate, PedidoRead, PedidoReadDetailed, PedidoUpdate
 from app.crud import pedidos as crud_pedidos
 
 
@@ -20,22 +21,12 @@ def create_pedido(
     validate_key_exist(db, pedido_in.id_direccion, "direccion", "id_direccion")
     validate_key_exist(db, pedido_in.id_estado, "estado", "id_estado")
     validate_key_exist(db, pedido_in.id_cliente, "cliente", "id_cliente")
+    validate_key_exist(db, pedido_in.id_cotizacion, "cotizacion", "id_cotizacion")
 
-    return crud_pedidos.create_pedido(
-        db,
-        pedido_in.id_direccion,
-        pedido_in.id_estado,
-        pedido_in.id_cliente,
-        pedido_in.fecha_entrega,
-        pedido_in.fecha_pedido,
-        pedido_in.comentario,
-        pedido_in.tipo_entrega,
-        pedido_in.subtotal,
-        pedido_in.total
-    )
+    return crud_pedidos.create_pedido(db, pedido_in)
 
 
-@router.get("/", response_model=list[PedidoReadDetailed])
+@router.get("/", response_model=List[PedidoReadDetailed])
 def read_pedidos(
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
@@ -43,7 +34,7 @@ def read_pedidos(
     return crud_pedidos.get_pedidos(db)
 
 
-@router.get("/{id_pedido}", response_model=PedidoReadDetailed2)
+@router.get("/{id_pedido}", response_model=PedidoReadDetailed)
 def read_pedido(
     id_pedido: int,
     db: Session = Depends(get_db)
@@ -70,19 +61,10 @@ def update_pedido(
     if pedido_in.id_cliente is not None:
         validate_key_exist(db, pedido_in.id_cliente, "cliente", "id_cliente")
 
-    pedido = crud_pedidos.update_pedido(
-        db,
-        id_pedido,
-        pedido_in.id_direccion,
-        pedido_in.id_estado,
-        pedido_in.id_cliente,
-        pedido_in.fecha_entrega,
-        pedido_in.fecha_pedido,
-        pedido_in.comentario,
-        pedido_in.tipo_entrega,
-        pedido_in.subtotal,
-        pedido_in.total
-    )
+    if pedido_in.id_cotizacion is not None:
+        validate_key_exist(db, pedido_in.id_cotizacion, "cotizacion", "id_cotizacion")
+
+    pedido = crud_pedidos.update_pedido(db, id_pedido, pedido_in)
 
     if not pedido:
         raise HTTPException(status_code=404, detail="Pedido no encontrado")
@@ -90,7 +72,7 @@ def update_pedido(
     return pedido
 
 
-@router.delete("/{id_pedido}", response_model=PedidoRead)
+@router.delete("/{id_pedido}", response_model=PedidoReadDetailed)
 def delete_pedido(
     id_pedido: int,
     db: Session = Depends(get_db),

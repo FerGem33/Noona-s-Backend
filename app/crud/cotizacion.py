@@ -24,8 +24,8 @@ def create_cotizacion(db: Session, cotizacion: CotizacionCreate):
     for detalle in cotizacion.detalles:
         db.execute(text("""
                 INSERT INTO public.detalles_cotizacion (
-                    producto_id_producto,
-                    cotizacion_id_cotizacion,
+                    id_producto,
+                    id_cotizacion,
                     cantidad,
                     precio_disenio
                 )
@@ -36,7 +36,7 @@ def create_cotizacion(db: Session, cotizacion: CotizacionCreate):
                     :precio
                 )
             """), {
-            "id_producto": detalle.producto_id_producto,
+            "id_producto": detalle.id_producto,
             "id_cotizacion": id_cotizacion,
             "cantidad": detalle.cantidad,
             "precio": detalle.precio_disenio
@@ -57,9 +57,9 @@ def get_cotizacion(db: Session):
 
     for cot in cotizaciones:
         detalles = db.execute(text("""
-            SELECT producto_id_producto, cantidad, precio_disenio
+            SELECT id_producto, cantidad, precio_disenio
             FROM detalles_cotizacion
-            WHERE cotizacion_id_cotizacion = :id
+            WHERE id_cotizacion = :id
         """), {"id": cot["id_cotizacion"]}).mappings().all()
 
         result.append({
@@ -81,9 +81,9 @@ def get_cotizacion_by_id(db: Session, id_cotizacion: int):
         return None
 
     detalles = db.execute(text("""
-        SELECT producto_id_producto, cantidad, precio_disenio
+        SELECT id_producto, cantidad, precio_disenio
         FROM detalles_cotizacion
-        WHERE cotizacion_id_cotizacion = :id
+        WHERE id_cotizacion = :id
     """), {"id": id_cotizacion}).mappings().all()
 
     return {
@@ -111,21 +111,21 @@ def update_cotizacion(db: Session, id_cotizacion: int, cotizacion: CotizacionUpd
         # delete old
         db.execute(text("""
             DELETE FROM detalles_cotizacion
-            WHERE cotizacion_id_cotizacion = :id
+            WHERE id_cotizacion = :id
         """), {"id": id_cotizacion})
 
         # insert new
         for d in cotizacion.detalles:
             db.execute(text("""
                 INSERT INTO detalles_cotizacion (
-                    producto_id_producto,
-                    cotizacion_id_cotizacion,
+                    id_producto,
+                    id_cotizacion,
                     cantidad,
                     precio_disenio
                 )
                 VALUES (:prod, :cot, :cant, :precio)
             """), {
-                "prod": d.producto_id_producto,
+                "prod": d.id_producto,
                 "cot": id_cotizacion,
                 "cant": d.cantidad,
                 "precio": d.precio_disenio
@@ -142,7 +142,7 @@ def delete_cotizacion(db: Session, id_cotizacion: int):
 
     db.execute(text("""
         DELETE FROM detalles_cotizacion
-        WHERE cotizacion_id_cotizacion = :id
+        WHERE id_cotizacion = :id
     """), {"id": id_cotizacion})
 
     db.execute(text("""
