@@ -27,8 +27,8 @@ def crear_cotizacion(
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
 ):
-    validate_key_exist(db, cotizacion.id_pedido, "pedidos", "id_pedido")
-    validate_key_exist(db, cotizacion.id_producto, "producto", "id_producto")
+    for cot in cotizacion.detalles:
+        validate_key_exist(db, cot.producto_id_producto, "producto", "id_producto")
 
     return create_cotizacion(db, cotizacion)
 
@@ -41,14 +41,13 @@ def listar_cotizacion(
     return get_cotizacion(db)
 
 
-@router.get("/{id_pedido}/{id_producto}", response_model=CotizacionOut)
+@router.get("/{id_cotizacion}", response_model=CotizacionOut)
 def obtener_cotizacion(
-    id_pedido: int,
-    id_producto: int,
+    id_cotizacion: int,
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
 ):
-    relacion = get_cotizacion_by_id(db, id_pedido, id_producto)
+    relacion = get_cotizacion_by_id(db, id_cotizacion)
 
     if not relacion:
         raise HTTPException(status_code=404, detail="Relacion no encontrada")
@@ -56,24 +55,20 @@ def obtener_cotizacion(
     return relacion
 
 
-@router.put("/{id_pedido}/{id_producto}", response_model=CotizacionOut)
+@router.put("/{id_cotizacion}", response_model=CotizacionOut)
 def actualizar_cotizacion(
-    id_pedido: int,
-    id_producto: int,
+    id_cotizacion: int,
     cotizacion: CotizacionUpdate,
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
 ):
-    if cotizacion.id_pedido is not None:
-        validate_key_exist(db, cotizacion.id_pedido, "pedidos", "id_pedido")
-
-    if cotizacion.id_producto is not None:
-        validate_key_exist(db, cotizacion.id_producto, "producto", "id_producto")
+    validate_key_exist(db, id_cotizacion, "cotizacion", "id_cotizacion")
+    for cot in cotizacion.detalles:
+        validate_key_exist(db, cot.producto_id_producto, "producto", "id_producto")
 
     relacion_actualizada = update_cotizacion(
         db,
-        id_pedido,
-        id_producto,
+        id_cotizacion,
         cotizacion
     )
 
@@ -83,14 +78,13 @@ def actualizar_cotizacion(
     return relacion_actualizada
 
 
-@router.delete("/{id_pedido}/{id_producto}", response_model=CotizacionOut)
+@router.delete("/{id_cotizacion}", response_model=CotizacionOut)
 def eliminar_cotizacion(
-    id_pedido: int,
-    id_producto: int,
+    id_cotizacion: int,
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
 ):
-    relacion_eliminada = delete_cotizacion(db, id_pedido, id_producto)
+    relacion_eliminada = delete_cotizacion(db, id_cotizacion)
 
     if not relacion_eliminada:
         raise HTTPException(status_code=404, detail="Relacion no encontrada")
