@@ -154,13 +154,32 @@ def update_pedido(db: Session, id_pedido: int, pedido: PedidoUpdate):
 
 
 def delete_pedido(db: Session, id_pedido: int):
-    result = db.execute(
+    pedido = get_pedido_by_id(db, id_pedido)
+
+    if not pedido:
+        return None
+
+    db.execute(
+        text("""
+                DELETE FROM pago
+                WHERE id_pedido = :id_pedido
+            """),
+        {"id_pedido": id_pedido}
+    )
+    db.execute(
+        text("""
+                DELETE FROM usuario_has_pedidos
+                WHERE id_pedido = :id_pedido
+            """),
+        {"id_pedido": id_pedido}
+    )
+    db.execute(
         text("""
             DELETE FROM pedidos
             WHERE id_pedido = :id_pedido
-            RETURNING *
         """),
         {"id_pedido": id_pedido}
     )
     db.commit()
-    return result.mappings().first()
+
+    return pedido

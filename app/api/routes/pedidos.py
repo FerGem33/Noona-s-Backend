@@ -4,7 +4,7 @@ from typing import List
 
 from app.core.dependencies import get_db, require_roles, validate_key_exist, get_current_user
 from app.core.roles import Roles
-from app.schemas.pedidos import PedidoCreate, PedidoRead, PedidoReadDetailed, PedidoUpdate
+from app.schemas.pedidos import PedidoCreate, PedidoRead, PedidoUpdate
 from app.crud import pedidos as crud_pedidos
 
 
@@ -26,7 +26,7 @@ def create_pedido(
     return crud_pedidos.create_pedido(db, pedido_in)
 
 
-@router.get("/", response_model=List[PedidoReadDetailed])
+@router.get("/", response_model=List[PedidoRead])
 def read_pedidos(
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
@@ -34,7 +34,7 @@ def read_pedidos(
     return crud_pedidos.get_pedidos(db)
 
 
-@router.get("/{id_pedido}", response_model=PedidoReadDetailed)
+@router.get("/{id_pedido}", response_model=PedidoRead)
 def read_pedido(
     id_pedido: int,
     db: Session = Depends(get_db)
@@ -72,7 +72,7 @@ def update_pedido(
     return pedido
 
 
-@router.delete("/{id_pedido}", response_model=PedidoReadDetailed)
+@router.delete("/{id_pedido}", response_model=PedidoRead)
 def delete_pedido(
     id_pedido: int,
     db: Session = Depends(get_db),

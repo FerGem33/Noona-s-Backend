@@ -34,10 +34,7 @@ class PedidoUpdate(BaseModel):
 
 
 class PedidoRead(PedidoBase):
-    pass
-
-
-class PedidoReadDetailed(PedidoBase):
+    id_pedido: int
     direccion: str
     estado: str
     cliente: str
