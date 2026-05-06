@@ -63,8 +63,9 @@ def actualizar_cotizacion(
     current_user=Depends(require_roles(*authorized_roles))
 ):
     validate_key_exist(db, id_cotizacion, "cotizacion", "id_cotizacion")
-    for cot in cotizacion.detalles:
-        validate_key_exist(db, cot.id_producto, "producto", "id_producto")
+    if cotizacion.detalles is not None:
+        for cot in cotizacion.detalles:
+            validate_key_exist(db, cot.id_producto, "producto", "id_producto")
 
     relacion_actualizada = update_cotizacion(
         db,
