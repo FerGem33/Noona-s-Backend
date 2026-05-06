@@ -49,10 +49,13 @@ def get_pedido_by_id(db: Session, id_pedido: int):
                 JOIN direccion d ON p.id_direccion = d.id_direccion
                 JOIN estado e ON p.id_estado = e.id_estado
                 JOIN cliente c ON p.id_cliente = c.id_cliente
-                WHERE id_pedido = :id_pedido
+                WHERE p.id_pedido = :id_pedido
             """),
         {"id_pedido": id_pedido}
     ).mappings().first()
+
+    if not pedido:
+        return None
 
     productos = db.execute(
         text("""
