@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
@@ -139,6 +140,22 @@ def delete_cotizacion(db: Session, id_cotizacion: int):
     existing = get_cotizacion_by_id(db, id_cotizacion)
     if not existing:
         return None
+
+    used = db.execute(
+        text("""
+            SELECT id_pedido
+            FROM pedidos
+            WHERE id_cotizacion = :id_cotizacion
+            LIMIT 1
+        """),
+        {"id_cotizacion": id_cotizacion}
+    ).mappings().first()
+
+    if used:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"No se puede eliminar la cotización porque está asociada al pedido #{used['id_pedido']}n"
+        )
 
     db.execute(text("""
         DELETE FROM detalles_cotizacion
