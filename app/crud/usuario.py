@@ -9,6 +9,7 @@ def get_usuarios(db: Session):
             SELECT u.id_usuario, u.nombre, r.id_rol, r.descripcion as rol
             FROM usuario u
             JOIN rol r ON u.id_rol = r.id_rol
+            WHERE estado_usuario = TRUE
             ORDER BY id_rol
         """)
     )
@@ -21,7 +22,7 @@ def get_usuario_by_id(db: Session, id_usuario: int):
            SELECT u.id_usuario, u.nombre, r.id_rol, r.descripcion as rol
             FROM usuario u
             JOIN rol r ON u.id_rol = r.id_rol
-            WHERE u.id_usuario = :id_usuario
+            WHERE u.id_usuario = :id_usuario AND estado_usuario = TRUE
         """),
         {"id_usuario": id_usuario}
     )
@@ -34,7 +35,7 @@ def get_usuario_by_nombre(db: Session, nombre: str):
             SELECT u.id_usuario, u.nombre, r.id_rol, r.descripcion as rol, u.contrasena_hash
             FROM usuario u
             JOIN rol r ON u.id_rol = r.id_rol
-            WHERE u.nombre = :nombre
+            WHERE u.nombre = :nombre AND estado_usuario = TRUE
         """),
         {"nombre": nombre}
     )
@@ -102,11 +103,11 @@ def update_usuario(db: Session, id_usuario: int, nombre: str=None, id_rol: int=N
 def delete_usuario(db: Session, id_usuario: int):
     result = db.execute(
         text("""
-            DELETE FROM usuario
-            WHERE id_usuario = :id_usuario
-            RETURNING id_usuario, nombre, id_rol, 
-                (select descripcion as rol from rol where id_rol = (select id_rol from usuario where id_usuario = :id_usuario))
-        """),
+                UPDATE usuario SET estado_usuario = FALSE
+                WHERE id_usuario = :id_usuario
+                RETURNING id_usuario, nombre, id_rol, 
+                    (select descripcion as rol from rol where id_rol = (select id_rol from usuario where id_usuario = :id_usuario))
+            """),
         {"id_usuario": id_usuario}
     )
     db.commit()

@@ -33,8 +33,8 @@ def read_usuarios(
 ):
     return crud_usuario.get_usuarios(db)
 
-@router.get("/{usuario_nombre}", response_model=UsuarioRead)
-def read_usuario(
+@router.get("/name/{usuario_nombre}", response_model=UsuarioRead)
+def read_usuario_by_name(
     usuario_nombre: str,
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
