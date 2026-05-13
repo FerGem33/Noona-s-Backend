@@ -36,7 +36,7 @@ def login(
         "token_type": "bearer"
     }
 
-@router.get("/usuario/{usuario_nombre}", response_model=UsuarioRead)
+@router.get("/usuario/nombre/{usuario_nombre}", response_model=UsuarioRead)
 def read_usuario(
     usuario_nombre: str,
     db: Session = Depends(get_db),
