@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from app.core.dependencies import get_db, require_roles, validate_key_exist
 from app.core.roles import Roles
-from app.schemas.compra import CompraPreCreate, CompraCreate, CompraPreUpdate, CompraUpdate, CompraOut
+from app.schemas.compra import CompraPreCreate, CompraCreate, CompraPreUpdate, CompraUpdate, CompraOut, CompraOutDetailed
 from app.schemas.materia_prima_compra import MateriaPrimaCompraBase, MateriaPrimaCompraCreate
 from app.crud.materia_prima_compra import create_materia_prima_compra, get_materia_prima_compra_by_id_compra, delete_materia_prima_compra
 from app.crud.compra import (
@@ -82,7 +82,7 @@ def crear_compra(
         return created_compra
 
 
-@router.get("/", response_model=list[CompraOut])
+@router.get("/", response_model=list[CompraOutDetailed])
 def listar_compras(
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
@@ -90,12 +90,13 @@ def listar_compras(
     return get_compras(db)
 
 
-@router.get("/{id_compra}", response_model=CompraOut)
+@router.get("/{id_compra}", response_model=CompraOutDetailed)
 def obtener_compra(
     id_compra: int,
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
 ):
+    validate_key_exist(db, id_compra, "compra", "id_compra")
     compra = get_compra_by_id(db, id_compra)
 
     if not compra:

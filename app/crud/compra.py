@@ -28,8 +28,26 @@ def get_compras(db: Session):
         ORDER BY id_compra
     """)
 
-    result = db.execute(query)
-    return result.mappings().all()
+    query2 = text("""
+            SELECT mpc.id_materia, mp.descripcion, mpc.cantidad, mp.precio_unitario
+            FROM materia_prima_compra mpc
+            JOIN materia_prima mp ON mpc.id_materia = mp.id_materia
+            AND mpc.id_compra = :id_compra; 
+        """)
+
+    compras = db.execute(query).mappings().all()
+    result = []
+
+    for compra in compras:
+        detalle = db.execute(query2, {
+            "id_compra": compra["id_compra"]
+        }).mappings().all()
+
+        result.append({
+            **compra, "detalle": detalle
+        })
+
+    return result
 
 
 def get_compra_by_id(db: Session, id_compra: int):
@@ -39,11 +57,24 @@ def get_compra_by_id(db: Session, id_compra: int):
         WHERE id_compra = :id_compra
     """)
 
-    result = db.execute(query, {
+    compra = db.execute(query, {
         "id_compra": id_compra
-    })
+    }).mappings().first()
 
-    return result.mappings().first()
+    query2 = text("""
+        SELECT mpc.id_materia, mp.descripcion, mpc.cantidad, mp.precio_unitario
+        FROM materia_prima_compra mpc
+        JOIN materia_prima mp ON mpc.id_materia = mp.id_materia
+        AND mpc.id_compra = :id_compra; 
+    """)
+
+    detalle = db.execute(query2, {
+        "id_compra": id_compra
+    }).mappings().all()
+
+    return {
+        **compra, "detalle": detalle
+    }
 
 
 def update_compra(db: Session, id_compra: int, compra: CompraUpdate):

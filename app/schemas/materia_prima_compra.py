@@ -17,3 +17,8 @@ class MateriaPrimaCompraUpdate(BaseModel):
 
 class MateriaPrimaCompraOut(MateriaPrimaCompraBase):
     id_compra: int = Field(..., ge=1)
+
+
+class MateriaPrimaCompraOutDetailed(MateriaPrimaCompraBase):
+    descripcion: str
+    precio_unitario: float

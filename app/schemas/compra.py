@@ -3,7 +3,7 @@ from datetime import datetime
 
 from typing import List
 from pydantic import BaseModel, Field
-from app.schemas.materia_prima_compra import MateriaPrimaCompraBase
+from app.schemas.materia_prima_compra import MateriaPrimaCompraBase, MateriaPrimaCompraOutDetailed
 
 
 class CompraBase(BaseModel):
@@ -32,8 +32,10 @@ class CompraOut(CompraBase):
     id_compra: int = Field(..., ge=1)
     total: Decimal = Field(..., ge=0)
     efectuada: bool
-
     class Config:
         json_encoders = {
             Decimal: lambda v: float(v)
         }
+
+class CompraOutDetailed(CompraOut):
+    detalle: List[MateriaPrimaCompraOutDetailed]
