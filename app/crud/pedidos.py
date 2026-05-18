@@ -6,7 +6,7 @@ from app.schemas.pedidos import PedidoCreate, PedidoUpdate
 def get_pedidos(db: Session):
     pedidos = db.execute(
         text("""
-            SELECT p.id_pedido, p.id_direccion, p.id_estado, p.id_cliente, p.id_cotizacion, cot.precio_envio
+            SELECT p.id_pedido, p.id_direccion, p.id_estado, p.id_cliente, p.id_cotizacion, cot.precio_envio,
                    d.descripcion AS direccion, e.descripcion AS estado, c.nombre||' '||c.apellido AS cliente,
                    p.fecha_entrega, p.fecha_pedido, p.comentario, p.tipo_entrega, p.subtotal, p.total, p.efectuada
             FROM pedidos p
@@ -43,7 +43,7 @@ def get_pedidos(db: Session):
 def get_pedido_by_id(db: Session, id_pedido: int):
     pedido = db.execute(
         text("""
-                SELECT p.id_pedido, p.id_direccion, p.id_estado, p.id_cliente, p.id_cotizacion, cot.precio_envio
+                SELECT p.id_pedido, p.id_direccion, p.id_estado, p.id_cliente, p.id_cotizacion, cot.precio_envio,
                        d.descripcion AS direccion, e.descripcion AS estado, c.nombre||' '||c.apellido AS cliente,
                        p.fecha_entrega, p.fecha_pedido, p.comentario, p.tipo_entrega, p.subtotal, p.total, p.efectuada
                 FROM pedidos p
