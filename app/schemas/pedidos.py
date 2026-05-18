@@ -38,4 +38,5 @@ class PedidoRead(PedidoBase):
     direccion: str
     estado: str
     cliente: str
+    precio_envio: float
     productos: List[DetalleCotizacionRead]
