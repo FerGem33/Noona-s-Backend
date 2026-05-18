@@ -8,6 +8,7 @@ def get_roles(db: Session):
         text("""
             SELECT id_rol, descripcion
             FROM rol
+            WHERE estado_rol = TRUE
             ORDER BY id_rol
         """)
     )
@@ -19,7 +20,7 @@ def get_rol_by_id(db: Session, id_rol: int):
         text("""
             SELECT id_rol, descripcion
             FROM rol
-            WHERE id_rol = :id_rol
+            WHERE id_rol = :id_rol AND estado_rol = TRUE
         """),
         {"id_rol": id_rol}
     )
@@ -96,7 +97,8 @@ def delete_rol(db: Session, id_rol: int):
     try:
         result = db.execute(
             text("""
-                DELETE FROM rol
+                UPDATE rol
+                SET estado_rol = FALSE
                 WHERE id_rol = :id_rol
                 RETURNING id_rol, descripcion
             """),
