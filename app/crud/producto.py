@@ -42,6 +42,7 @@ def get_productos(db: Session):
     query = text("""
         SELECT id_producto, id_categoria, id_receta, descripcion, precio_unitario, imagen, activo
         FROM public.producto
+        WHERE activo = TRUE
         ORDER BY id_producto
     """)
 
@@ -53,7 +54,7 @@ def get_producto_by_id(db: Session, id_producto: int):
     query = text("""
         SELECT id_producto, id_categoria, id_receta, descripcion, precio_unitario, imagen, activo
         FROM public.producto
-        WHERE id_producto = :id_producto
+        WHERE id_producto = :id_producto AND activo = TRUE
     """)
 
     result = db.execute(query, {
@@ -114,7 +115,8 @@ def update_producto_imagen(db: Session, id_producto: int, imagen: str | None):
 
 def delete_producto(db: Session, id_producto: int):
     query = text("""
-        DELETE FROM public.producto
+        UPDATE producto
+        SET activo = FALSE
         WHERE id_producto = :id_producto
         RETURNING id_producto, id_categoria, id_receta, descripcion, precio_unitario, imagen, activo
     """)
