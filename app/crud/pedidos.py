@@ -50,7 +50,7 @@ def get_pedido_by_id(db: Session, id_pedido: int):
                 JOIN direccion d ON p.id_direccion = d.id_direccion
                 JOIN estado e ON p.id_estado = e.id_estado
                 JOIN cliente c ON p.id_cliente = c.id_cliente
-                OIN cotizacion cot ON p.id_cotizacion = cot.id_cotizacion
+                JOIN cotizacion cot ON p.id_cotizacion = cot.id_cotizacion
                 WHERE p.id_pedido = :id_pedido
             """),
         {"id_pedido": id_pedido}

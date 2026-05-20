@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_db, require_roles
+from app.core.dependencies import get_db, require_roles, validate_key_exist
 from app.core.roles import Roles
 from app.schemas.receta import RecetaCreate, RecetaUpdate, RecetaOut
 from app.crud.receta import (
@@ -23,6 +23,7 @@ def crear_receta(
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
 ):
+    validate_key_exist(db, receta.id_usuario, "usuario", "id_usuario")
     return create_receta(db, receta)
 
 
@@ -55,6 +56,8 @@ def actualizar_receta(
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
 ):
+    validate_key_exist(db, id_receta, "receta", "id_receta")
+    if receta.id_usuario is not None: validate_key_exist(db, receta.id_usuario, "usuario", "id_usuario")
     receta_actualizada = update_receta(db, id_receta, receta)
 
     if not receta_actualizada:
@@ -69,6 +72,7 @@ def eliminar_receta(
     db: Session = Depends(get_db),
     current_user=Depends(require_roles(*authorized_roles))
 ):
+    validate_key_exist(db, id_receta, "receta", "id_receta")
     receta_eliminada = delete_receta(db, id_receta)
 
     if not receta_eliminada:
