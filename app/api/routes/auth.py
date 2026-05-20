@@ -11,7 +11,7 @@ from app.crud import usuario as crud_usuario
 from app.core.roles import Roles
 
 router = APIRouter()
-authorized_roles = [Roles.ADMIN, Roles.DUENA]
+authorized_roles = [Roles.ADMIN, Roles.DUENA, Roles.REPARTIDOR]
 
 
 @router.post("/login", response_model=Token)
