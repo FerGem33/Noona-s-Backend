@@ -136,8 +136,8 @@ def reporte_ventas(
 
     stats = [
         {"label": "Ventas", "value": n_ventas},
-        {"label": "Total de ventas", "value": f'${sum_ventas:.2f}'},
-        {"label": "Promedio de ventas", "value": f'${avg_ventas:.2f}'},
+        {"label": "Total de ventas", "value": f'${sum_ventas:,.2f}'},
+        {"label": "Promedio de ventas", "value": f'${avg_ventas:,.2f}'},
     ]
 
     pdf = generate_pdf(
@@ -191,8 +191,8 @@ def reporte_compras(
 
     stats = [
         {"label": "Compras", "value": n_compras},
-        {"label": "Total de compras", "value": f'${sum_compras:.2f}'},
-        {"label": "Promedio de compras", "value": f'${avg_compras:.2f}'},
+        {"label": "Total de compras", "value": f'${sum_compras:,.2f}'},
+        {"label": "Promedio de compras", "value": f'${avg_compras:,.2f}'},
     ]
 
     pdf = generate_pdf(
@@ -322,7 +322,7 @@ def reporte_compra(
 
     stats = [
         {"label": "Proveedor", "value": compra["proveedor"]},
-        {"label": "Total de compra", "value": f'${compra["total"]:.2f}'},
+        {"label": "Total de compra", "value": f'${compra["total"]:,.2f}'},
         {"label": "Fecha", "value": format_date(compra["fecha"])},
     ]
 

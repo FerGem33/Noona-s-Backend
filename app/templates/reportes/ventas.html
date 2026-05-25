@@ -115,7 +115,7 @@
     }
 
     .main-table thead th {
-      text-align: left;
+      text-align: right;
       font-size: 9.4px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -128,6 +128,7 @@
     }
 
     .main-table tbody td {
+      text-align: right;
       padding: 10px 4px;
       border-bottom: 1px solid #ececec;
       color: #1f2937;
@@ -164,6 +165,14 @@
   </style>
 </head>
 <body>
+  {% macro format_number(value) -%}
+    {{ "{:,}".format(value) }}
+  {%- endmacro %}
+
+  {% macro format_money(value) -%}
+    ${{ "{:,.2f}".format(value) }}
+  {%- endmacro %}
+
   <div class="page">
     <table class="header-table">
       <tr>
@@ -183,7 +192,9 @@
         <td>
           <div class="stat-card">
             <div class="stat-label">{{ card.label }}</div>
-            <div class="stat-value">{{ card.value }}</div>
+            <div class="stat-value">
+              {% if card.value is number %}{{ format_number(card.value) }}{% else %}{{ card.value }}{% endif %}
+            </div>
           </div>
         </td>
         {% endfor %}
@@ -206,7 +217,7 @@
             <td>{{ venta.cliente}}</td>
             <td>{{ venta.fecha_pedido}}</td>
             <td>{{ venta.fecha_entrega}}</td>
-            <td class="num">${{ venta.total }}</td>
+            <td class="num">{{ format_money(venta.total) }}</td>
           </tr>
           {% endfor %}
         </tbody>

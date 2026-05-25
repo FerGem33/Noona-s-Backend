@@ -135,6 +135,7 @@
   }
 
   .info-table td {
+    text-align: right;
     padding: 10px 14px;
     border-bottom: 1px solid #f1f1f1;
     vertical-align: top;
@@ -191,7 +192,7 @@
     }
 
     .main-table thead th {
-      text-align: left;
+      text-align: right;
       font-size: 9.4px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -204,6 +205,7 @@
     }
 
     .main-table tbody td {
+      text-align: right;
       padding: 10px 4px;
       border-bottom: 1px solid #ececec;
       color: #1f2937;
@@ -226,6 +228,14 @@
   </style>
 </head>
 <body>
+  {% macro format_number(value) -%}
+    {{ "{:,}".format(value) }}
+  {%- endmacro %}
+
+  {% macro format_money(value) -%}
+    ${{ "{:,.2f}".format(value) }}
+  {%- endmacro %}
+
   <div class="page">
     <table class="header-table">
       <tr>
@@ -280,17 +290,17 @@
         <tr>
           <td>
             <span class="info-label">Subtotal</span>
-            <div class="info-money">${{ pedido.subtotal }}</div>
+            <div class="info-money">{{ format_money(pedido.subtotal) }}</div>
           </td>
 
           <td>
             <span class="info-label">Precio de envío</span>
-            <div class="info-money">${{ pedido.precio_envio }}</div>
+            <div class="info-money">{{ format_money(pedido.precio_envio) }}</div>
           </td>
 
           <td>
             <span class="info-label">Gran total</span>
-            <div class="info-total">${{ pedido.total }}</div>
+            <div class="info-total">{{ format_money(pedido.total) }}</div>
           </td>
         </tr>
 
@@ -321,11 +331,11 @@
           {% for producto in detalle %}
           <tr>
             <td>{{ producto.producto }}</td>
-            <td class="num">{{ producto.cantidad }}</td>
-            <td class="num">${{ "%.2f"|format(producto.precio_unitario) }}</td>
-            <td class="num">${{ "%.2f"|format(producto.precio_disenio) }}</td>
-            <td class="num">${{ "%.2f"|format(producto.subtotal_producto) }}</td>
-            <td class="num">${{ "%.2f"|format(producto.total_producto) }}</td>
+            <td class="num">{{ format_number(producto.cantidad) }}</td>
+            <td class="num">{{ format_money(producto.precio_unitario) }}</td>
+            <td class="num">{{ format_money(producto.precio_disenio) }}</td>
+            <td class="num">{{ format_money(producto.subtotal_producto) }}</td>
+            <td class="num">{{ format_money(producto.total_producto) }}</td>
           </tr>
           {% endfor %}
         </tbody>
