@@ -6,7 +6,7 @@
   <style>
     @page {
       size: A4;
-      margin: 15mm;
+      margin: 12mm;
     }
 
     html, body {
@@ -68,7 +68,7 @@
     .stats-table {
       width: 100%;
       border-collapse: separate;
-      border-spacing: 8px 0;
+      border-spacing: 5px 0;
       table-layout: fixed;
       margin: 0 0 22px 0;
     }
@@ -81,7 +81,7 @@
     .stat-card {
       border: 1px solid #e5e7eb;
       border-radius: 10px;
-      padding: 13px 14px 11px 14px;
+      padding: 12px 10px 10px 10px;
       height: 78px;
       box-sizing: border-box;
       background: #ffffff;
@@ -91,7 +91,7 @@
       font-size: 9px;
       line-height: 1.35;
       text-transform: uppercase;
-      letter-spacing: 1.1px;
+      letter-spacing: 0.7px;
       color: #7c7f86;
       font-weight: 700;
       margin-bottom: 16px;
@@ -109,19 +109,25 @@
 
     .main-table {
       width: 100%;
+      max-width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      font-size: 10.5px;
+      font-size: 9.4px;
+    }
+
+    .main-table th,
+    .main-table td {
+      box-sizing: border-box;
     }
 
     .main-table thead th {
       text-align: right;
-      font-size: 9.4px;
+      font-size: 7.8px;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.45px;
       color: #6b7280;
       font-weight: 700;
-      padding: 0 4px 9px 4px;
+      padding: 0 2px 8px 2px;
       border-bottom: 1px solid #f4b6bf;
       line-height: 1.2;
       word-break: break-word;
@@ -129,7 +135,7 @@
 
     .main-table tbody td {
       text-align: right;
-      padding: 10px 4px;
+      padding: 9px 2px;
       border-bottom: 1px solid #ececec;
       color: #1f2937;
       vertical-align: middle;
@@ -141,12 +147,12 @@
       page-break-inside: avoid;
     }
 
-    .col-cliente { width: 15%; }
-    .col-direccion {width: 25%}
-    .col-fecha  { width: 12%; }
+    .col-cliente { width: 16%; }
+    .col-direccion {width: 22%}
+    .col-fecha  { width: 11%; }
     .col-total    { width: 12%; }
     .col-entrega {width: 12%}
-    .col-estado {width: 12%}
+    .col-estado {width: 16%}
 
     .num {
       white-space: nowrap;
@@ -157,7 +163,10 @@
       font-weight: 800;
       text-transform: uppercase;
       color: #111827;
-      white-space: nowrap;
+      font-size: 7.6px;
+      line-height: 1.15;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
   </style>
 </head>
