@@ -124,7 +124,7 @@ def actualizar_compra(
         if pre_compra.detalle is not None:
             current_detalle = get_materia_prima_compra_by_id_compra(db, id_compra)
 
-            if current_compra.efectuada:
+            if current_compra['efectuada']:
                 aplicar_compra(db, id_compra, current_detalle, revert=True)
             aplicar_compra(db, id_compra, pre_compra.detalle)
 
@@ -159,7 +159,7 @@ def eliminar_compra(
     current_compra = get_compra_by_id(db, id_compra)
     current_detalle = get_materia_prima_compra_by_id_compra(db, id_compra)
 
-    if current_compra.efectuada:
+    if current_compra['efectuada']:
         aplicar_compra(db, id_compra, current_detalle, revert=True)
     compra_eliminada = delete_compra(db, id_compra)
 
